@@ -210,6 +210,7 @@ end
 include("some.jl")
 
 include("dict.jl")
+include("abstractset.jl")
 include("set.jl")
 
 include("char.jl")
