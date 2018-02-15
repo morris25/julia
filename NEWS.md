@@ -997,6 +997,8 @@ Deprecated or removed
 
   * `ismatch(regex, str)` has been deprecated in favor of `contains(str, regex)` ([#24673]).
 
+  * `matchall` has been deprecated in favor of `collect(m.match for m in eachmatch(r, s))` ([#26071]).
+
   * `linspace` and `logspace` now require an explicit number of elements to be
     supplied rather than defaulting to `50`([#24794], [#24805]).
 
@@ -1321,3 +1323,4 @@ Command-line option changes
 [#25745]: https://github.com/JuliaLang/julia/issues/25745
 [#25896]: https://github.com/JuliaLang/julia/issues/25896
 [#25998]: https://github.com/JuliaLang/julia/issues/25998
+[#26071]: https://github.com/JuliaLang/julia/issues/26071
