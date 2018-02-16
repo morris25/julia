@@ -612,3 +612,15 @@ let n = 1
     @test ceil.(Int, n ./ (1,)) == (1,)
     @test ceil.(Int, 1 ./ (1,)) == (1,)
 end
+
+# issue #25954, value of `.=`
+let a = zeros(2, 3), b = zeros(4, 5)
+    a .= b .= 1
+    @test a == ones(2, 3)
+    @test b == ones(4, 5)
+    @test (b .= 1) === 1
+    c = [6, 7]; d = [8, 9]
+    x = (a .= c.+d)
+    @test a == [14 14 14; 16 16 16]
+    @test x == [14, 16]
+end
