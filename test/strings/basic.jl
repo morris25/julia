@@ -483,14 +483,6 @@ end
 # Test cmp with AbstractStrings that don't index the same as UTF-8, which would include
 # (LegacyString.)UTF16String and (LegacyString.)UTF32String, among others.
 
-mutable struct CharStr <: AbstractString
-    chars::Vector{Char}
-    CharStr(x) = new(collect(x))
-end
-Base.start(x::CharStr) = start(x.chars)
-Base.next(x::CharStr, i::Int) = next(x.chars, i)
-Base.done(x::CharStr, i::Int) = done(x.chars, i)
-Base.lastindex(x::CharStr) = lastindex(x.chars)
 @testset "cmp without UTF-8 indexing" begin
     # Simple case, with just ANSI Latin 1 characters
     @test "áB" != CharStr("áá") # returns false with bug
@@ -865,4 +857,23 @@ let x = SubString("ab", 1, 1)
     y = convert(SubString{String}, x)
     @test y === x
     chop("ab") === chop.(["ab"])[1]
+end
+
+@testset "Generic String APIs" begin
+    cs = CharString([' ', 'a', 'b', 'c', ' '])
+    @test cs == " abc "
+    @test lstrip(cs) == SubString(cs, 2) == "abc "
+    @test rstrip(cs) == " abc"
+    rs = RopeString([" ", "abc", " "])
+    @test rs == cs
+    @test lstrip(rs) == lstrip(cs) == "abc "
+    @test rstrip(rs) == rstrip(cs) == " abc"
+    ds = DecodeString(raw" \x61b\u0063 ")
+    @test ds == cs
+    @test lstrip(ds) == lstrip(cs) == "abc "
+    @test rstrip(ds) == rstrip(cs) == " abc"
+    ds2 = DecodeString(RopeString([" ", raw"\x61b\u00", "63 "]))
+    @test ds2 == cs
+    @test lstrip(ds2) == lstrip(cs) == "abc "
+    @test rstrip(ds2) == rstrip(cs) == " abc"
 end
