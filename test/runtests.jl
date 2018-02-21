@@ -49,7 +49,7 @@ end
 # Base.compile only works from node 1, so compile test is handled specially
 move_to_node1("compile")
 move_to_node1("SharedArrays")
-
+move_to_node1("Pkg3/pkg")
 # In a constrained memory environment, run the "distributed" test after all other tests
 # since it starts a lot of workers and can easily exceed the maximum memory
 limited_worker_rss && move_to_node1("Distributed")
@@ -63,6 +63,7 @@ cd(dirname(@__FILE__)) do
         LinearAlgebra.BLAS.set_num_threads(1)
     end
     skipped = 0
+
 
     @everywhere include("testdefs.jl")
 
@@ -169,7 +170,7 @@ cd(dirname(@__FILE__)) do
             end
         end
 
-        n > 1 && length(node1_tests) > 1 && print("\nExecuting tests that run on node 1 only:\n")
+        n > 1 && length(node1_tests) >= 1 && print("\nExecuting tests that run on node 1 only:\n")
         for t in node1_tests
             # As above, try to run each test
             # which must run on node 1. If
